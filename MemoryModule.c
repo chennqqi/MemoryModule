@@ -32,6 +32,21 @@
 #include <stdio.h>
 #endif
 
+#if defined(__MINGW64__)||defined(__MINGW32__ )
+#include <inttypes.h>
+       /* Call GetNativeSystemInfo if supported or GetSystemInfo otherwise. */
+void getSysInfo(SYSTEM_INFO* pSi)
+{
+    void (WINAPI *pGNSI)(LPSYSTEM_INFO);
+    pGNSI = (void(WINAPI *)(LPSYSTEM_INFO))
+                GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")),
+                               "GetNativeSystemInfo");
+    if (NULL != pGNSI)
+        pGNSI(pSi);
+    else
+    	GetSystemInfo(pSi);
+}
+#endif
 #if _MSC_VER
 // Disable warning about data -> function pointer conversion
 #pragma warning(disable:4055)
@@ -569,7 +584,7 @@ HMEMORYMODULE MemoryLoadLibraryEx(const void *data, size_t size,
         }
     }
 
-    GetNativeSystemInfo(&sysInfo);
+    getSysInfo(&sysInfo);
     alignedImageSize = AlignValueUp(old_header->OptionalHeader.SizeOfImage, sysInfo.dwPageSize);
     if (alignedImageSize != AlignValueUp(lastSectionEnd, sysInfo.dwPageSize)) {
         SetLastError(ERROR_BAD_EXE_FORMAT);

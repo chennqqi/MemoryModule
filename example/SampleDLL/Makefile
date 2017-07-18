@@ -9,10 +9,10 @@ CXX = $(PLATFORM)-w64-mingw32-g++
 LINK = $(PLATFORM)-w64-mingw32-g++
 RC = $(PLATFORM)-w64-mingw32-windres
 else
-CC = g++
+CC = gcc
 CXX = g++
 LINK = ld
-RC = rc
+RC = windres
 endif
 
 RM = rm
@@ -33,7 +33,7 @@ SampleDLL.dll: $(OBJ)
 	$(CXX) $(CFLAGS) -c $<
 
 %.res: %.rc
-	$(RC) $(RCFLAGS) -o $*.res $<
+	$(RC) $< $(RCFLAGS) -o $*.res
 
 clean:
 	$(RM) -rf $(OBJ) SampleDLL.dll

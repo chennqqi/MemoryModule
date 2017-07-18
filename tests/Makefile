@@ -9,15 +9,15 @@ CXX = $(PLATFORM)-w64-mingw32-g++
 LD = $(PLATFORM)-w64-mingw32-ld
 RC = $(PLATFORM)-w64-mingw32-windres
 else
-CC = g++
+CC = gcc
 CXX = g++
 LD = ld
-RC = rc
+RC = windres
 endif
 
 RM = rm
 CFLAGS  = -Wall -g -DTESTSUITE
-LDFLAGS =
+LDFLAGS = 
 RCFLAGS = -O coff
 
 ifdef UNICODE
@@ -27,7 +27,7 @@ endif
 CFLAGS_DLL = -DSAMPLEDLL_EXPORTS
 CFLAGS_EXE =
 LDFLAGS_DLL = -shared
-LDFLAGS_EXE = -static
+LDFLAGS_EXE = -static -lstdc++
 
 TEST_DLLS = \
 	test-align-128.dll \
@@ -79,7 +79,7 @@ test-relocate.dll: $(DLL_OBJ)
 	$(CC) $(CFLAGS) $(CFLAGS_DLL) -c $<
 
 %.res: %.rc
-	$(RC) $(RCFLAGS) -o $*.res $<
+	$(RC) $< $(RCFLAGS) -o $*.res
 
 clean:
 	$(RM) -rf LoadDll.exe $(TEST_DLLS) $(LOADDLL_OBJ) $(DLL_OBJ)

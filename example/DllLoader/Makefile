@@ -4,18 +4,18 @@ ifeq ($(UNAME), Linux)
 ifndef PLATFORM
 PLATFORM = i686
 endif
-CC = $(PLATFORM)-w64-mingw32-g++
+CC = $(PLATFORM)-w64-mingw32-gcc
 CXX = $(PLATFORM)-w64-mingw32-g++
 LINK = $(PLATFORM)-w64-mingw32-ld
 else
-CC = g++
+CC = gcc
 CXX = g++
 LINK = ld
 endif
 
 RM = rm
 CFLAGS  = -Wall -g
-LDFLAGS = -static
+LDFLAGS = -static -lstdc++
 
 ifdef UNICODE
 CFLAGS += -DUNICODE -D_UNICODE
